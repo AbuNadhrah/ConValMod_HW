@@ -9,7 +9,7 @@ region = "eu-central-1"
 }
 
 # Define the variables for the environments and the availability zones
-variable "environments" {
+variable "environment" {
 type = list(string)
 default = ["dev", "prod"]
 }
@@ -27,10 +27,10 @@ module "vpc" {
 source  = "terraform-aws-modules/vpc/aws"
 version = "3.4.0"
 
-name = "vpc-${var.environment}"
+name = "vpc-{var.environment}"
 cidr = "10.0.0.0/16"
 
-azs             = var.availability_zones[var.region]
+azs             = var.availability_zones[var.aws.region]
 private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
 public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
 
@@ -48,8 +48,8 @@ module "ec2" {
 source  = "terraform-aws-modules/ec2-instance/aws"
 version = "3.2.0"
 
-name           = "ec2-${var.environment}"
-instance_count = 1
+name           = "ec2-{var.environment}"
+count = 1
 
 ami                         = "ami-0ce71448843cb18a1" # Ubuntu 20.04 LTS
 instance_type               = "t2.micro" # Free tier
